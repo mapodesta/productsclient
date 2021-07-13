@@ -80,7 +80,7 @@ const TareaState = (props) => {
         `/api/tareas/${tarea._id}`,
         tarea
       );
-      console.log(respuesta);
+
       dispatch({
         type: ACTUALIZAR_TAREA,
         payload: respuesta.data.tarea,
