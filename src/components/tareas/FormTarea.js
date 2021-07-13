@@ -1,29 +1,35 @@
-import React, { useContext, useState ,useEffect} from "react";
+import React, { useContext, useState, useEffect } from "react";
 import proyectoContext from "../../context/proyectos/ProyectoContext";
 import TareaContext from "../../context/tareas/tareaContext";
-import uuid from 'uuid'
+
 const FormTarea = () => {
   const proyectosContext = useContext(proyectoContext);
   const { proyecto } = proyectosContext;
 
   const tareasContext = useContext(TareaContext);
 
-  const { agregarTarea, validarTarea, errorTarea, obtenerTareas,tareaSeleccionada,actualizarTarea } =
-    tareasContext;
+  const {
+    agregarTarea,
+    validarTarea,
+    errorTarea,
+    obtenerTareas,
+    tareaSeleccionada,
+    actualizarTarea,
+  } = tareasContext;
 
   const [tarea, guardarTarea] = useState({
     nombre: "",
   });
 
   useEffect(() => {
-    if(tareaSeleccionada !== null){
-      guardarTarea(tareaSeleccionada)
-    }else{
+    if (tareaSeleccionada !== null) {
+      guardarTarea(tareaSeleccionada);
+    } else {
       guardarTarea({
-        nombre:''
-      })
+        nombre: "",
+      });
     }
-  }, [tareaSeleccionada])
+  }, [tareaSeleccionada]);
 
   const { nombre } = tarea;
 
@@ -43,16 +49,12 @@ const FormTarea = () => {
       return;
     }
 
-    if(tareaSeleccionada === null){
-
-      tarea.proyectoId = proyecto[0].id;
-      tarea.estado = false;
+    if (tareaSeleccionada === null) {
+      tarea.proyecto = proyecto[0]._id;
       agregarTarea(tarea);
-    }else{
-      actualizarTarea(tarea)
+    } else {
+      actualizarTarea(tarea);
     }
-
-
 
     obtenerTareas(proyecto[0].id);
     guardarTarea({
@@ -78,8 +80,8 @@ const FormTarea = () => {
           <input
             type="submit"
             className="btn btn-primario btn-submit btn-block"
-            name={tareaSeleccionada ? 'Guardar Cambios' : 'Crear Tarea'}
-            value={tareaSeleccionada ? 'Guardar Cambios' : 'Crear Tarea'}
+            name={tareaSeleccionada ? "Guardar Cambios" : "Crear Tarea"}
+            value={tareaSeleccionada ? "Guardar Cambios" : "Crear Tarea"}
           />
         </div>
       </form>

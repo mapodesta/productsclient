@@ -6,63 +6,47 @@ import {
   AGREGAR_TAREA,
   VALIDAR_TAREA,
   ELIMINAR_TAREA,
-  ESTADO_TAREA,
   TAREA_ACTUAL,
   ACTUALIZAR_TAREA,
 } from "../../types";
-import { v4 as uuidv4 } from 'uuid';
+
+import clienteAxios from "../../config/axios";
 
 const TareaState = (props) => {
   const initialState = {
-    tareas: [
-      { id: 1, nombre: "Elegir Plataforma", estado: true, proyectoId: 3 },
-      { id: 2, nombre: "Elegir Colores", estado: false, proyectoId: 2 },
-      {
-        id: 3,
-        nombre: "Elegir Plataforma de pago",
-        estado: false,
-        proyectoId: 3,
-      },
-      { id: 4, nombre: "Elegir Hosting", estado: true, proyectoId: 1 },
-      { id: 5, nombre: "Elegir Plataforma", estado: true, proyectoId: 1 },
-      { id: 6, nombre: "Elegir Colores", estado: false, proyectoId: 3 },
-      {
-        id: 7,
-        nombre: "Elegir Plataforma de pago",
-        estado: false,
-        proyectoId: 3,
-      },
-      { id: 8, nombre: "Elegir Hosting", estado: true, proyectoId: 1 },
-      { id: 9, nombre: "Elegir Plataforma", estado: true, proyectoId: 2 },
-      { id: 10, nombre: "Elegir Colores", estado: false, proyectoId: 2 },
-      {
-        id: 11,
-        nombre: "Elegir Plataforma de pago",
-        estado: false,
-        proyectoId: 3,
-      },
-      { id: 12, nombre: "Elegir Hosting", estado: true, proyectoId: 1 },
-    ],
-    tareasProyecto: null,
+    tareasProyecto: [],
     errorTarea: false,
-    tareaSeleccionada:null,
+    tareaSeleccionada: null,
   };
 
   const [state, dispatch] = useReducer(tareaReducer, initialState);
 
-  const obtenerTareas = (proyectoId) => {
-    dispatch({
-      type: TAREAS_PROYECTO,
-      payload: proyectoId,
-    });
+  const obtenerTareas = async (proyecto) => {
+    try {
+      const resultado = await clienteAxios.get("/api/tareas/", {
+        params: { proyecto },
+      });
+
+      dispatch({
+        type: TAREAS_PROYECTO,
+        payload: resultado.data.tareas,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const agregarTarea = (tarea) => {
-    tarea.id=uuidv4()
-    dispatch({
-      type: AGREGAR_TAREA,
-      payload: tarea,
-    });
+  const agregarTarea = async (tarea) => {
+    try {
+      const respuesta = await clienteAxios.post("/api/tareas", tarea);
+
+      dispatch({
+        type: AGREGAR_TAREA,
+        payload: respuesta.data.tarea,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const validarTarea = () =>
@@ -70,17 +54,17 @@ const TareaState = (props) => {
       type: VALIDAR_TAREA,
     });
 
-  const eliminarTarea = (id) =>
-    dispatch({
-      type: ELIMINAR_TAREA,
-      payload: id,
-    });
+  const eliminarTarea = async (id, proyecto) => {
+    try {
+      await clienteAxios.delete(`/api/tareas/${id}`, { params: { proyecto } });
 
-  const cambiarEstadoTarea = (tarea) => {
-    dispatch({
-      type: ESTADO_TAREA,
-      payload: tarea,
-    });
+      dispatch({
+        type: ELIMINAR_TAREA,
+        payload: id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const guardarTareaActual = (tarea) => {
@@ -90,24 +74,32 @@ const TareaState = (props) => {
     });
   };
 
-  const actualizarTarea = tarea =>
-  dispatch({
-    type:ACTUALIZAR_TAREA,
-    payload:tarea,
-  })
+  const actualizarTarea = async (tarea) => {
+    try {
+      const respuesta = await clienteAxios.put(
+        `/api/tareas/${tarea._id}`,
+        tarea
+      );
+      console.log(respuesta);
+      dispatch({
+        type: ACTUALIZAR_TAREA,
+        payload: respuesta.data.tarea,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <TareaContext.Provider
       value={{
-        tareas: state.tareas,
         tareasProyecto: state.tareasProyecto,
         errorTarea: state.errorTarea,
-        tareaSeleccionada:state.tareaSeleccionada,
+        tareaSeleccionada: state.tareaSeleccionada,
         obtenerTareas,
         agregarTarea,
         validarTarea,
         eliminarTarea,
-        cambiarEstadoTarea,
         guardarTareaActual,
         actualizarTarea,
       }}

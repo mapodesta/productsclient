@@ -3,18 +3,14 @@ import TareaContext from "../../context/tareas/tareaContext";
 import proyectoContext from "../../context/proyectos/ProyectoContext";
 const Tarea = ({ tarea }) => {
   const tareaContext = useContext(TareaContext);
-  const {
-    eliminarTarea,
-    obtenerTareas,
-    cambiarEstadoTarea,
-    guardarTareaActual,
-  } = tareaContext;
+  const { eliminarTarea, obtenerTareas, actualizarTarea, guardarTareaActual } =
+    tareaContext;
 
   const proyectosContext = useContext(proyectoContext);
   const { proyecto } = proyectosContext;
 
   const handleEliminar = (id) => {
-    eliminarTarea(id);
+    eliminarTarea(id, proyecto[0]._id);
     obtenerTareas(proyecto[0].id);
   };
 
@@ -24,14 +20,12 @@ const Tarea = ({ tarea }) => {
     } else {
       tarea.estado = true;
     }
-    cambiarEstadoTarea(tarea);
+    actualizarTarea(tarea);
   };
 
-  const seleccionarTarea = tarea =>{
-
-    guardarTareaActual(tarea)
-
-  }
+  const seleccionarTarea = (tarea) => {
+    guardarTareaActual(tarea);
+  };
   return (
     <li className="tarea sombre">
       <p>{tarea.nombre}</p>
@@ -55,13 +49,17 @@ const Tarea = ({ tarea }) => {
         )}
       </div>
       <div className="acciones">
-        <button type="button" className="btn btn-primario" onClick={()=> seleccionarTarea(tarea)} >
+        <button
+          type="button"
+          className="btn btn-primario"
+          onClick={() => seleccionarTarea(tarea)}
+        >
           Editar
         </button>
         <button
           type="button"
           className="btn btn-secundario"
-          onClick={() => handleEliminar(tarea.id)}
+          onClick={() => handleEliminar(tarea._id)}
         >
           Eliminar
         </button>

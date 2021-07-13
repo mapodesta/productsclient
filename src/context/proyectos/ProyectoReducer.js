@@ -2,11 +2,12 @@ import {
   FORMULARIO_PROYECTO,
   OBTENER_PROYECTOS,
   AGREGAR_PROYECTO,
+  PROYECTO_ERROR,
   VALIDAR_FORMULARIO,
   PROYECTO_ACTUAL,
   ELIMINAR_PROYECTO,
 } from "../../types";
-
+/* eslint import/no-anonymous-default-export: [2, {"allowArrowFunction": true}] */
 export default (state, action) => {
   switch (action.type) {
     case FORMULARIO_PROYECTO:
@@ -36,18 +37,22 @@ export default (state, action) => {
       return {
         ...state,
         proyecto: state.proyectos.filter(
-          (proyecto) => proyecto.id === action.payload
+          (proyecto) => proyecto._id === action.payload
         ),
       };
     case ELIMINAR_PROYECTO:
       return {
         ...state,
         proyectos: state.proyectos.filter(
-          (proyecto) => proyecto.id !== action.payload
+          (proyecto) => proyecto._id !== action.payload
         ),
         proyecto: null,
       };
-
+    case PROYECTO_ERROR:
+      return {
+        ...state,
+        mensaje: action.payload,
+      };
     default:
       return state;
   }

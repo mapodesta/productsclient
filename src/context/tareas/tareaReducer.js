@@ -3,25 +3,22 @@ import {
   AGREGAR_TAREA,
   VALIDAR_TAREA,
   ELIMINAR_TAREA,
-  ESTADO_TAREA,
   TAREA_ACTUAL,
   ACTUALIZAR_TAREA,
 } from "../../types";
-
+/* eslint import/no-anonymous-default-export: [2, {"allowArrowFunction": true}] */
 export default (state, action) => {
   switch (action.type) {
     case TAREAS_PROYECTO:
       return {
         ...state,
-        tareasProyecto: state.tareas.filter(
-          (tarea) => tarea.proyectoId === action.payload
-        ),
+        tareasProyecto: action.payload,
       };
 
     case AGREGAR_TAREA:
       return {
         ...state,
-        tareas: [action.payload, ...state.tareas],
+        tareasProyecto: [action.payload, ...state.tareasProyecto],
         errorTarea: false,
       };
 
@@ -34,27 +31,25 @@ export default (state, action) => {
     case ELIMINAR_TAREA:
       return {
         ...state,
-        tareas: state.tareas.filter((tarea) => tarea.id !== action.payload),
+        tareasProyecto: state.tareasProyecto.filter(
+          (tarea) => tarea._id !== action.payload
+        ),
       };
-      case ACTUALIZAR_TAREA:
-    case ESTADO_TAREA:
+    case ACTUALIZAR_TAREA:
       return {
         ...state,
-        tareas: state.tareas.map((tarea) =>
-          tarea.id === action.payload.id ? action.payload : tarea
+        tareasProyecto: state.tareasProyecto.map((tarea) =>
+          tarea._id === action.payload._id ? action.payload : tarea
         ),
-        tareaSeleccionada:null
+        tareaSeleccionada: null,
       };
 
-      case TAREA_ACTUAL:
-        return{
-          ...state,
-          tareaSeleccionada:action.payload
-        }
+    case TAREA_ACTUAL:
+      return {
+        ...state,
+        tareaSeleccionada: action.payload,
+      };
 
-        
-       
-          
     default:
       return state;
   }

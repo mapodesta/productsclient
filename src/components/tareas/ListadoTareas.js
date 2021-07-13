@@ -15,7 +15,7 @@ const ListadoTareas = () => {
   if (!proyecto) return <h1>Selecciona un proyecto</h1>;
 
   const onClickEliminar = (proyecto) => {
-    eliminarProyecto(proyecto[0].id);
+    eliminarProyecto(proyecto[0]._id);
   };
 
   return (
